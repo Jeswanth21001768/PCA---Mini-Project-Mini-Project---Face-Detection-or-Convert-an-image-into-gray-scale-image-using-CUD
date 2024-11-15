@@ -17,7 +17,6 @@ The aim of this project is to demonstrate how to convert an image to grayscale u
 
 ## Program:
 ```
-
 #include <stdio.h>
 #include <string>
 #include <math.h>
@@ -25,7 +24,6 @@ The aim of this project is to demonstrate how to convert an image to grayscale u
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-
 
 __global__
 void colorConvertToGrey(unsigned char *rgb, unsigned char *grey, int rows, int cols)
@@ -81,24 +79,18 @@ int main(int argc, char **argv)
 	cudaMemset(d_grey_image, 0, sizeof(unsigned char) * total_pixels);
 	
 	cudaMemcpy(d_rgb_image, h_rgb_image, sizeof(unsigned char) * total_pixels * CHANNELS, cudaMemcpyHostToDevice);
-
 	const dim3 dimGrid((int)ceil((cols)/16), (int)ceil((rows)/16));
 	const dim3 dimBlock(16, 16);
-	
 	colorConvertToGrey<<<dimGrid, dimBlock>>>(d_rgb_image, d_grey_image, rows, cols);
-
 	cudaMemcpy(h_grey_image, d_grey_image, sizeof(unsigned char) * total_pixels, cudaMemcpyDeviceToHost);
-
 	outputImage(output_file, h_grey_image, rows, cols);
 	cudaFree(d_rgb_image);
 	cudaFree(d_grey_image);
 	return 0;
 }
-
 size_t loadImageFile(unsigned char *grey_image, const std::string &input_file, int *rows, int *cols) 
 {
-	cv::Mat img_data; 
-
+	cv::Mat img_data;
 	img_data = cv::imread(input_file.c_str(), CV_LOAD_IMAGE_COLOR);
 	if (img_data.empty()) 
 	{
@@ -136,13 +128,9 @@ void outputImage(const std::string& output_file, unsigned char* grey_image, int 
 
 ![image](https://github.com/AishreeRamesh/PCA---Mini-Project-Mini-Project---Face-Detection-or-Convert-an-image-into-gray-scale-image-using-CUD/assets/70213227/c03ca5be-2556-4369-85d7-8c3bb2de1153)
 
-
-
-
 ### Grayscale Image
 
 ![image](https://github.com/AishreeRamesh/PCA---Mini-Project-Mini-Project---Face-Detection-or-Convert-an-image-into-gray-scale-image-using-CUD/assets/70213227/e5fd1d3c-be0b-4e8d-8d34-864f022e372c)
-
 
 ## Result:
 The CUDA program successfully converts the input image to grayscale using the GPU. The resulting grayscale image is saved as an output file. This example demonstrates the power of GPU parallelism in accelerating image processing tasks.
